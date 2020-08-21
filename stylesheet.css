@@ -1,0 +1,56 @@
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+#header {
+    padding: 15px;
+    width: 60%;
+    margin: 0 auto;
+}
+
+#header #title {
+    margin-top: 0;
+    font-size: 1.6em;
+    font-weight: 600;
+    color: #33AA00;
+    text-decoration: none;
+}
+
+#tray {
+    float: right;
+}
+
+#tray a {
+    color: #33AA00;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-color: #343a40;
+    border-radius: .15rem;
+    padding: .375rem .75rem;
+}
+
+#torso {
+    width: 60%;
+    margin: 0 auto;
+    display: flex;
+    padding-top: 34px;
+}
+
+.appendage {
+    border: 1px solid transparent;
+    border-color: #343a40;
+    padding: .375rem;
+    margin: .375rem;
+    border-radius: .15rem;
+    width: 30%;
+}
+
+.appendage h2 {
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
+    text-decoration: underline #343a40;
+}
+
