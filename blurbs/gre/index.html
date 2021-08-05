@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Gilad Naaman</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/stylesheet.css" type="text/css">
+    </head>
+    <body>
+        <div id="header">
+            <a id="title" href="/">Gilad Naaman</a>
+
+            <div id="tray">
+                <a href="https://www.linkedin.com/in/gilad-naaman-b6164214a/">linky dinky</a>
+                <a href="https://github.com/Gilnaa">code</a>
+                <a href="/blog">blog</a>
+            </div>
+        </div>
+        <section class="section">
+           <div class="container">
+               
+<h1 class="title">
+  Kernel GRE bug post-mortem
+</h1>
+<p class="subtitle"><strong>2021-07-27</strong></p>
+<p><a href="https://en.wikipedia.org/wiki/Generic_Routing_Encapsulation">GRE</a> is lightweight and stateless tunneling protocol that rides over a network protocol (IPv4/6), and can encapsulate either a another network layer (L3-GRE), or another link layer (L2-GRE).
+When the next layer is another link layer, the interface is referred to as <code>gretap</code> in Linux.</p>
+<p>A GRE tunnel is defined by a remote endpoint and a &quot;key&quot;, which is used to differentiate distinct tunnels between the same 2 endpoints.
+You can think of the key like a UDP/TCP port, in essence, just for GRE</p>
+<p>Like any other network interface, it can also have a network address assigned to it.</p>
+<p>When a userspace program sends a packet/frame through a GRE interface, the kernel prepands it with a GRE header with the matching key, and sends <em>that</em> over the underlying link to the remote endpoint.</p>
+<p><img src="/imgs/packet-build.png" alt="f" /></p>
+<p>On the destination endpoint, the kernel peels the different layers and uses the key to deliver
+the data to the correct endpoint.</p>
+<p><img src="/imgs/packet-peel.png" alt="f" /></p>
+
+
+           </div>
+       </section>
+    </body>
+</html>
+

@@ -31,8 +31,77 @@ body {
     padding: .375rem .75rem;
 }
 
+/* If the screen size is 600px wide or less, set the font-size of <div> to 30px */
+@media only screen and (max-device-width : 1080px) {
+    .section {
+        font-size: 30px;
+    }
+
+    .section img {
+        width: 100%;
+    }
+
+    #header {
+        
+        width: 90%;
+    }
+    #header #title {
+        margin-top: 0;
+        font-size: 3em;
+        font-weight: 600;
+        color: #33AA00;
+        text-decoration: none;
+    }
+    #tray a {
+        font-size: 2em;
+        border: 1px solid transparent;
+        border-color: #343a40;
+        border-radius: .15rem;
+        padding: .375rem .75rem;
+    }
+    
+}
+
+.section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-top: 34px;
+    display: flex;
+    justify-content: center;
+    /* background-color: khaki; */
+}
+
+.section img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;        
+}
+
+.section .container {
+    display: inline-block;
+    width:100%;
+    
+    
+
+    /* background-color: lawngreen; */
+}
+/* 
+.section p {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+}
+
+.section h1, .section h2, .section h3 {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    
+} */
+
 #torso {
-    width: 60%;
+    /* width: 60%; */
+    max-width: 720px;
     margin: 0 auto;
     display: flex;
     padding-top: 34px;
@@ -54,3 +123,8 @@ body {
     text-decoration: underline #343a40;
 }
 
+pre {
+    padding: 15px;
+    margin: 0 15px;
+    overflow: auto;
+}

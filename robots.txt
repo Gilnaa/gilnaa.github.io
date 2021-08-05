@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://naaman.io/sitemap.xml
