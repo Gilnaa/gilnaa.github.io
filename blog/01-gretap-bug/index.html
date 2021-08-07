@@ -223,9 +223,10 @@ Ubuntu even supplies <a href="https://wiki.ubuntu.com/Kernel/MainlineBuilds">thi
 You might have guessed it, but all of this time I've been operating under this implicit assumption
 that the kernel that's shipped with with Ubuntu is the regular, mainline, vanilla, stock kernel.</p>
 <p>Good ol' kernel.</p>
-<p>But this is obviously false - Ubuntu's release model doesn't allow it just upgrade any software version to the next major version. But if the software stays the same over time, it will not get any security fixes.
+<p>But this is obviously false - Ubuntu's release model doesn't allow it to just upgrade any software to its next major version.
+But if the software stays the same over time, it will not get any security fixes or bug fixes.
 So Ubuntu's maintainers do what any reasonable maintainer does - they backport patchsets from newer kernel versions.</p>
-<p>The kernels the come with Ubuntu out-of-the-box are patched, but the kernels that are provided in https://wiki.ubuntu.com/Kernel/MainlineBuilds, are, well, mainline.</p>
+<p>The kernels that come with Ubuntu out-of-the-box are patched, but the kernels that are provided in https://wiki.ubuntu.com/Kernel/MainlineBuilds, are, well, mainline.</p>
 <p>So this bug, presumably, was either backported from a later version, or introduced by a botched application of a patch.</p>
 <p>We also know that this bug was reproduced on my friends' machines (BTW they run Arch); both of them with newer kernels, so the latter option can be eliminated.</p>
 <p>Time to keep bisecting.</p>
