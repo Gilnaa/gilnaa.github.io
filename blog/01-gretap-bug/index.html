@@ -30,7 +30,7 @@ Some time ago we started to upgrade our Ubuntu machines at work to the latest LT
 <p>Oh no.</p>
 <h2 id="initial-analysis">Initial Analysis</h2>
 <p>Arriving to the crime scene, there were clear signs of foul play.</p>
-<p>We make heavy usage of L2-<a href="https://en.wikipedia.org/wiki/Generic_Routing_Encapsulation">GRE</a>s <sup><a href="/blurb/gre">1</a></sup> in some of our products,
+<p>We make heavy usage of L2-<a href="https://en.wikipedia.org/wiki/Generic_Routing_Encapsulation">GRE</a>s in some of our products,
 usually assigning them a MAC address matching one of an actual physical interface somewhere.</p>
 <p>A cursory glance at <code>tcpdump</code>'s output for the faulty GRE interface shows that IPv4 traffic <em>does</em> reach us, and it even <em>seems</em> to have the correct MAC and IP addresses.
 Why would the kernel ignore this ICMP request?</p>
@@ -174,7 +174,7 @@ Our product is too large and complex - our logs' SNR is too low.</p>
 </span><span style="color:#bf616a;">$</span><span> sudo ip netns exec B tcpdump</span><span style="color:#bf616a;"> -neqlllvi</span><span> gre1 icmp &amp; ; </span><span style="color:#bf616a;">sleep</span><span> 1</span><span>
 </span><span style="color:#bf616a;">$</span><span> sudo ip netns exec A python3 send_pkt.py</span><span>
 </span></code></pre>
-<p>This packet is an <code>IPv4/GRE/Ethernet/IPv4/ICMP(echo request)</code> packet - a ping over a GRE-tap.
+<p>This packet is an <code>IPv4/GRE/Ethernet/IPv4/ICMP(echo request)</code> packet - a ping over an L2-GRE.
 Sure enough, this was enough to trigger this bug on my Ubuntu 20.04 machine (Kernel v5.4), and on a few of my friends' machines (Kernel v5.12).</p>
 <p>Running this script on the previous version of Ubuntu we used, 18.04 (Kernel 4.15), did not trigger the bug.</p>
 <p>Want to try it yourself? If <code>tcpdump</code> reports a packet with a destination of <code>18:be:92:a0:ee:26</code>, you're golden.
@@ -315,8 +315,8 @@ Oh, it turns out we've been here before:</p>
 </span><span>}</span><span>
 </span></code></pre>
 <p>At this point in the processing pipeline, the kernel just stripped the tunnel header and starts to process the next header.
-When the tunnel is a regular GRE (probably most of the time), the next header is a network header (IPv4/IPv6/etc.), so setting the network header offset to the cursor makes sense.</p>
-<p>Since we use GRE-tap (probably rare), the next header is sadly, an Ethernet header, rendering this reset incorrect.
+When the tunnel is a regular L3-GRE (probably most of the time), the next header is a network header (IPv4/IPv6/etc.), so setting the network header offset to the cursor makes sense.</p>
+<p>Since we use L2-GRE (probably rare), the next header is sadly, an Ethernet header, rendering this reset incorrect.
 We need to make sure that the correct offset is set:</p>
 <pre data-lang="diff" style="background-color:#2b303b;color:#c0c5ce;" class="language-diff "><code class="language-diff" data-lang="diff"><span style="color:#bf616a;">-	skb_reset_network_header(skb);</span><span>
 </span><span style="color:#a3be8c;">+	skb_set_network_header(skb, (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) ? ETH_HLEN : 0);</span><span>
@@ -324,7 +324,7 @@ We need to make sure that the correct offset is set:</p>
 <h2 id="tl-dr">tl;dr</h2>
 <p>Kernel got confused between headers; <a href="https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=227adfb2b1df">patched via one line</a>.</p>
 <h2 id="the-correct-fix">The correct fix</h2>
-<p>A friend of mIne which uSuAlly wAnts to remain anonymous, notiCed that problem is a bit larger than that particular piece of code in <code>ip_tunnel.c</code>.</p>
+<p>A friend of m<strong>I</strong>ne which u<strong>S</strong>u<strong>A</strong>lly w<strong>A</strong>nts to remain anonymous, noti<strong>C</strong>ed that problem is a bit larger than that particular piece of code in <code>ip_tunnel.c</code>.</p>
 <p>For a brief moment in the pipeline, the <code>skb</code> struct is invalid: <code>skb-&gt;protocol</code> tells us that the next protocol is IPv4, but <code>data</code> points to the start of the Ethernet header.</p>
 <p>He proposed the following patch and asked me to send it to the mailing list, but sadly I'm too lazy to do so.</p>
 <pre data-lang="diff" style="background-color:#2b303b;color:#c0c5ce;" class="language-diff "><code class="language-diff" data-lang="diff"><span>diff --git a/net/ipv4/ip_tunnel.c b/net/ipv4/ip_tunnel.c</span><span>
@@ -392,10 +392,6 @@ We need to make sure that the correct offset is set:</p>
 </span><span> 	if (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) {</span><span>
 </span><span> 		if (!pskb_may_pull(skb, ETH_HLEN)) {</span><span>
 </span></code></pre>
-<h2 id="kpatch">kpatch</h2>
-<p>(TODO)</p>
-<h4 id="delete-this-drafts">DELETE THIS (drafts)</h4>
-<p>Well, no choice but use the ultimate tool for diagnosing network problems — helplessly staring at various <code>tcpdump</code>s with differing options.</p>
 
 
            </div>
