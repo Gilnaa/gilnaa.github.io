@@ -139,11 +139,10 @@ congestion.</p>
 It seems to happen quite a lot, and it was easily verified with tcpdump:
 <strong>All packets</strong> had <code>ECT(1)</code> on the outer header and <code>Non-ECT</code> on the inner.</p>
 <p>This alone, however, should not cause traffic to drop.
-Sorry, slip of the tongue - traffic wasn't dropped, and you could see no trace of drops in <code>ip -s link</code>.</p>
-<p>My traffic was <strong>brutally murdered</strong> by a wild overwrite.</p>
+Sorry, slip of the tongue - traffic wasn't dropped, per se, and you could see no trace of drops in <code>ip -s link</code>.</p>
 <h2 id="minimal-reproducer">Minimal reproducer</h2>
 <p>Well, nothing more could be done on a production environment.
-Our product is too large and complex - SNR is too low.</p>
+Our product is too large and complex - our logs' SNR is too low.</p>
 <p>Time to try and reproduce this in a vaccum:</p>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span> ip netns add A</span><span>
 </span><span style="color:#bf616a;">$</span><span> ip netns add B</span><span>
@@ -222,7 +221,7 @@ Ubuntu even supplies <a href="https://wiki.ubuntu.com/Kernel/MainlineBuilds">thi
 <h2 id="ubuntu-kernel-vanilla-kernel">Ubuntu Kernel != Vanilla Kernel</h2>
 <p>Okay, so I've messed up.
 You might have guessed it, but all of this time I've been operating under this implicit assumption
-that the kernel that the kernel shipped with with Ubuntu is the regular, mainline, vanilla, stock kernel.</p>
+that the kernel that's shipped with with Ubuntu is the regular, mainline, vanilla, stock kernel.</p>
 <p>Good ol' kernel.</p>
 <p>But this is obviously false - Ubuntu's release model doesn't allow it just upgrade any software version to the next major version. But if the software stays the same over time, it will not get any security fixes.
 So Ubuntu's maintainers do what any reasonable maintainer does - they backport patchsets from newer kernel versions.</p>
