@@ -1,20 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://naaman.io/</loc>
-    </url>
-    <url>
-        <loc>https://naaman.io/blog/</loc>
-    </url>
-    <url>
-        <loc>https://naaman.io/blog/01-gretap-bug/</loc>
-        <lastmod>2021-07-27</lastmod>
-    </url>
-    <url>
-        <loc>https://naaman.io/blurbs/</loc>
-    </url>
-    <url>
-        <loc>https://naaman.io/blurbs/gre/</loc>
-        <lastmod>2021-07-27</lastmod>
-    </url>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://naaman.io/</loc>
+    <lastmod>2021-07-27T15:27:57+03:00</lastmod>
+  </url><url>
+    <loc>https://naaman.io/posts/my-first-post/</loc>
+    <lastmod>2021-07-27T15:27:57+03:00</lastmod>
+  </url><url>
+    <loc>https://naaman.io/posts/</loc>
+    <lastmod>2021-07-27T15:27:57+03:00</lastmod>
+  </url><url>
+    <loc>https://naaman.io/about/</loc>
+  </url><url>
+    <loc>https://naaman.io/authors/</loc>
+  </url><url>
+    <loc>https://naaman.io/categories/</loc>
+  </url><url>
+    <loc>https://naaman.io/series/</loc>
+  </url><url>
+    <loc>https://naaman.io/tags/</loc>
+  </url>
 </urlset>
