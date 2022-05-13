@@ -51,7 +51,7 @@ Initial Analysis    Arriving to the crime scene, there were clear signs of foul 
     
       
       
-      <link rel="stylesheet" href="/css/coder.min.708686f8ab8176e91d44fcbe488a0fe0333b94f405cf18a52383d67ba22f0ccb.css" integrity="sha256-cIaG&#43;KuBdukdRPy&#43;SIoP4DM7lPQFzxilI4PWe6IvDMs=" crossorigin="anonymous" media="screen" />
+      <link rel="stylesheet" href="/css/coder.min.8e2b2510f60e1715eae08d113a808dcdaf17f6f711edb9e969be38d0074d240d.css" integrity="sha256-jislEPYOFxXq4I0ROoCNza8X9vcR7bnpab440AdNJA0=" crossorigin="anonymous" media="screen" />
     
 
     
@@ -81,7 +81,7 @@ Initial Analysis    Arriving to the crime scene, there were clear signs of foul 
         integrity="sha384-wyB/MspSJ/r2bT2kCj44qtsYRYlpzO2oAPhRj5myrWD63dt6qWv4x8AZe7Fl3K3b" crossorigin="anonymous"></script>
     
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.98.0" />
   </head>
 
   
@@ -165,7 +165,7 @@ Initial Analysis    Arriving to the crime scene, there were clear signs of foul 
         <p>At the time of writing this post, I am part of the Infra group of <a href="https://drivenets.com/">Drivenets</a>.
 Some time ago we started to upgrade our Ubuntu machines at work to the latest LTS, Ubuntu 20.04.</p>
 <p>For a few weeks, everything was fine; but peace is only ever temporary.</p>
-<p><img src="/images/bug-report.png" alt="badly drawn jira ticket with title &ldquo;very bug i don’t have IPv4 traffic on some of our machines this is a very real bug title oh boi&rdquo;" title="A real screenshot"></p>
+<p><img src="/images/bug-report.png" alt="badly drawn jira ticket with title &amp;ldquo;very bug i don’t have IPv4 traffic on some of our machines this is a very real bug title oh boi&amp;rdquo;" title="A real screenshot"></p>
 <p><em>just</em> ipv4, but <em>all</em> ipv4?</p>
 <p>Oh no.</p>
 <h2 id="initial-analysis">
@@ -179,13 +179,13 @@ Some time ago we started to upgrade our Ubuntu machines at work to the latest LT
 usually assigning them a MAC address matching one of an actual physical interface somewhere.</p>
 <p>A cursory glance at <code>tcpdump</code>&rsquo;s output for the faulty GRE interface shows that IPv4 traffic <em>does</em> reach us, and it even <em>seems</em> to have the correct MAC and IP addresses.
 Why would the kernel ignore this ICMP request?</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#ae81ff">19</span>:<span style="color:#ae81ff">05</span>:<span style="color:#ae81ff">17.680821</span> <span style="color:#ae81ff">18</span>:be:<span style="color:#ae81ff">92</span>:a0:<span style="color:#ae81ff">6</span>c:<span style="color:#ae81ff">06</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">18</span>:bd:<span style="color:#ae81ff">92</span>:a0:ee:<span style="color:#ae81ff">26</span>, IPv4, length <span style="color:#ae81ff">98</span>: (tos <span style="color:#ae81ff">0x0</span>, ttl <span style="color:#f92672">...</span>
-    <span style="color:#ae81ff">130.130.130.1</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">130.130.130.2</span>: ICMP echo request, id <span style="color:#ae81ff">20718</span>, seq <span style="color:#ae81ff">1</span>, length <span style="color:#ae81ff">64</span>
-</code></pre></div><p>Oh wait 😯 both mac addresses are slightly wrong; no wonder the kernel drops these.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ae81ff">19</span>:<span style="color:#ae81ff">05</span>:<span style="color:#ae81ff">17.680821</span> <span style="color:#ae81ff">18</span>:be:<span style="color:#ae81ff">92</span>:a0:<span style="color:#ae81ff">6</span>c:<span style="color:#ae81ff">06</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">18</span>:bd:<span style="color:#ae81ff">92</span>:a0:ee:<span style="color:#ae81ff">26</span>, IPv4, length <span style="color:#ae81ff">98</span>: (tos <span style="color:#ae81ff">0x0</span>, ttl <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">130.130.130.1</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">130.130.130.2</span>: ICMP echo request, id <span style="color:#ae81ff">20718</span>, seq <span style="color:#ae81ff">1</span>, length <span style="color:#ae81ff">64</span>
+</span></span></code></pre></div><p>Oh wait 😯 both mac addresses are slightly wrong; no wonder the kernel drops these.
 If we inspect the packet as it gets sent&hellip;</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#ae81ff">22</span>:<span style="color:#ae81ff">29</span>:<span style="color:#ae81ff">49.000231</span> <span style="color:#ae81ff">18</span>:be:<span style="color:#ae81ff">92</span>:a0:<span style="color:#ae81ff">6</span>c:<span style="color:#ae81ff">05</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">18</span>:be:<span style="color:#ae81ff">92</span>:a0:ee:<span style="color:#ae81ff">26</span>, IPv4, length <span style="color:#ae81ff">98</span>: (tos <span style="color:#ae81ff">0x0</span>, ttl <span style="color:#f92672">...</span>
-    <span style="color:#ae81ff">130.130.130.1</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">130.130.130.2</span>: ICMP echo request, id <span style="color:#ae81ff">20718</span>, seq <span style="color:#ae81ff">1</span>, length <span style="color:#ae81ff">64</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ae81ff">22</span>:<span style="color:#ae81ff">29</span>:<span style="color:#ae81ff">49.000231</span> <span style="color:#ae81ff">18</span>:be:<span style="color:#ae81ff">92</span>:a0:<span style="color:#ae81ff">6</span>c:<span style="color:#ae81ff">05</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">18</span>:be:<span style="color:#ae81ff">92</span>:a0:ee:<span style="color:#ae81ff">26</span>, IPv4, length <span style="color:#ae81ff">98</span>: (tos <span style="color:#ae81ff">0x0</span>, ttl <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">130.130.130.1</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">130.130.130.2</span>: ICMP echo request, id <span style="color:#ae81ff">20718</span>, seq <span style="color:#ae81ff">1</span>, length <span style="color:#ae81ff">64</span>
+</span></span></code></pre></div><blockquote>
 <p>&ldquo;well boss, I found the problem, we&rsquo;re off by 3 bits —</p>
 <p>— oh, I also have to fix that?&rdquo;</p>
 </blockquote>
@@ -197,77 +197,77 @@ If we inspect the packet as it gets sent&hellip;</p>
 </h2>
 <p>After contemplating my existence for a bit, trying to figure out if life is worth debugging this, I started opening various log files.</p>
 <p>Running <code>dmesg</code>, I saw an endless stream of</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[78005.657058] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78005.657127] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78005.657170] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78005.657252] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78005.657884] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78010.657871] net_ratelimit: 10 callbacks suppressed
-[78010.657873] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78010.657887] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78010.657922] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78010.657971] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78010.658008] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-[78010.658035] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
-</code></pre></div><p>Suspicious. When is this logged?
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>[78005.657058] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78005.657127] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78005.657170] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78005.657252] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78005.657884] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78010.657871] net_ratelimit: 10 callbacks suppressed
+</span></span><span style="display:flex;"><span>[78010.657873] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78010.657887] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78010.657922] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78010.657971] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78010.658008] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span><span style="display:flex;"><span>[78010.658035] ip_tunnel: non-ECT from 10.254.3.1 with TOS=0x1
+</span></span></code></pre></div><p>Suspicious. When is this logged?
 After cloning vanilla Linux kernel and checking out the v5.4 tag, I found the source:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// net/ipv4/ip_tunnel.c ~L393
-</span><span style="color:#75715e"></span>    skb_reset_network_header(skb);
-
-    err <span style="color:#f92672">=</span> IP_ECN_decapsulate(iph, skb);
-    <span style="color:#66d9ef">if</span> (unlikely(err)) {
-        <span style="color:#66d9ef">if</span> (log_ecn_error)
-            net_info_ratelimited(<span style="color:#e6db74">&#34;non-ECT from %pI4 with TOS=%#x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
-                    <span style="color:#f92672">&amp;</span>iph<span style="color:#f92672">-&gt;</span>saddr, iph<span style="color:#f92672">-&gt;</span>tos);
-        <span style="color:#66d9ef">if</span> (err <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>) {
-            <span style="color:#f92672">++</span>tunnel<span style="color:#f92672">-&gt;</span>dev<span style="color:#f92672">-&gt;</span>stats.rx_frame_errors;
-            <span style="color:#f92672">++</span>tunnel<span style="color:#f92672">-&gt;</span>dev<span style="color:#f92672">-&gt;</span>stats.rx_errors;
-            <span style="color:#66d9ef">goto</span> drop;
-        }
-    }
-</code></pre></div><p>Going further into <code>IP_ECN_decapsulate</code>: (skipping a few layers for brevity)</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
-</span><span style="color:#75715e"> * RFC 6040 4.2
-</span><span style="color:#75715e"> *  To decapsulate the inner header at the tunnel egress, a compliant
-</span><span style="color:#75715e"> *  tunnel egress MUST set the outgoing ECN field to the codepoint at the
-</span><span style="color:#75715e"> *  intersection of the appropriate arriving inner header (row) and outer
-</span><span style="color:#75715e"> *  header (column) in Figure 4
-</span><span style="color:#75715e"> *
-</span><span style="color:#75715e"> *      +---------+------------------------------------------------+
-</span><span style="color:#75715e"> *      |Arriving |            Arriving Outer Header               |
-</span><span style="color:#75715e"> *      |   Inner +---------+------------+------------+------------+
-</span><span style="color:#75715e"> *      |  Header | Not-ECT | ECT(0)     | ECT(1)     |     CE     |
-</span><span style="color:#75715e"> *      +---------+---------+------------+------------+------------+
-</span><span style="color:#75715e"> *      | Not-ECT | Not-ECT |Not-ECT(!!!)|Not-ECT(!!!)| &lt;drop&gt;(!!!)|
-</span><span style="color:#75715e"> *      |  ECT(0) |  ECT(0) | ECT(0)     | ECT(1)     |     CE     |
-</span><span style="color:#75715e"> *      |  ECT(1) |  ECT(1) | ECT(1) (!) | ECT(1)     |     CE     |
-</span><span style="color:#75715e"> *      |    CE   |      CE |     CE     |     CE(!!!)|     CE     |
-</span><span style="color:#75715e"> *      +---------+---------+------------+------------+------------+
-</span><span style="color:#75715e"> *
-</span><span style="color:#75715e"> *             Figure 4: New IP in IP Decapsulation Behaviour
-</span><span style="color:#75715e"> *
-</span><span style="color:#75715e"> *  returns 0 on success
-</span><span style="color:#75715e"> *          1 if something is broken and should be logged (!!! above)
-</span><span style="color:#75715e"> *          2 if packet should be dropped
-</span><span style="color:#75715e"> */</span>
-<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">__INET_ECN_decapsulate</span>(__u8 outer, __u8 inner, <span style="color:#66d9ef">bool</span> <span style="color:#f92672">*</span>set_ce)
-{
-    <span style="color:#66d9ef">if</span> (INET_ECN_is_not_ect(inner)) {
-        <span style="color:#66d9ef">switch</span> (outer <span style="color:#f92672">&amp;</span> INET_ECN_MASK) {
-        <span style="color:#66d9ef">case</span> INET_ECN_NOT_ECT:
-            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-        <span style="color:#66d9ef">case</span> INET_ECN_ECT_0:
-        <span style="color:#66d9ef">case</span> INET_ECN_ECT_1:
-            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
-        <span style="color:#66d9ef">case</span> INET_ECN_CE:
-            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span>;
-        }
-    }
-
-    <span style="color:#f92672">*</span>set_ce <span style="color:#f92672">=</span> INET_ECN_is_ce(outer);
-    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-}
-</code></pre></div><p>So it looks like that in order for the log to be triggered, the inner IPv4 header&rsquo;s ECT bits
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// net/ipv4/ip_tunnel.c ~L393
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    skb_reset_network_header(skb);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    err <span style="color:#f92672">=</span> IP_ECN_decapsulate(iph, skb);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (unlikely(err)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (log_ecn_error)
+</span></span><span style="display:flex;"><span>            net_info_ratelimited(<span style="color:#e6db74">&#34;non-ECT from %pI4 with TOS=%#x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&amp;</span>iph<span style="color:#f92672">-&gt;</span>saddr, iph<span style="color:#f92672">-&gt;</span>tos);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (err <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">++</span>tunnel<span style="color:#f92672">-&gt;</span>dev<span style="color:#f92672">-&gt;</span>stats.rx_frame_errors;
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">++</span>tunnel<span style="color:#f92672">-&gt;</span>dev<span style="color:#f92672">-&gt;</span>stats.rx_errors;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">goto</span> drop;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Going further into <code>IP_ECN_decapsulate</code>: (skipping a few layers for brevity)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * RFC 6040 4.2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  To decapsulate the inner header at the tunnel egress, a compliant
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  tunnel egress MUST set the outgoing ECN field to the codepoint at the
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  intersection of the appropriate arriving inner header (row) and outer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  header (column) in Figure 4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      +---------+------------------------------------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      |Arriving |            Arriving Outer Header               |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      |   Inner +---------+------------+------------+------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      |  Header | Not-ECT | ECT(0)     | ECT(1)     |     CE     |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      +---------+---------+------------+------------+------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      | Not-ECT | Not-ECT |Not-ECT(!!!)|Not-ECT(!!!)| &lt;drop&gt;(!!!)|
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      |  ECT(0) |  ECT(0) | ECT(0)     | ECT(1)     |     CE     |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      |  ECT(1) |  ECT(1) | ECT(1) (!) | ECT(1)     |     CE     |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      |    CE   |      CE |     CE     |     CE(!!!)|     CE     |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      +---------+---------+------------+------------+------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *             Figure 4: New IP in IP Decapsulation Behaviour
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  returns 0 on success
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *          1 if something is broken and should be logged (!!! above)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *          2 if packet should be dropped
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">__INET_ECN_decapsulate</span>(__u8 outer, __u8 inner, <span style="color:#66d9ef">bool</span> <span style="color:#f92672">*</span>set_ce)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (INET_ECN_is_not_ect(inner)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">switch</span> (outer <span style="color:#f92672">&amp;</span> INET_ECN_MASK) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> INET_ECN_NOT_ECT:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> INET_ECN_ECT_0:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> INET_ECN_ECT_1:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> INET_ECN_CE:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>set_ce <span style="color:#f92672">=</span> INET_ECN_is_ce(outer);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>So it looks like that in order for the log to be triggered, the inner IPv4 header&rsquo;s ECT bits
 need to be 0, and the outer&rsquo;s need to be either ECT, or CE.</p>
 <p><em>What are those terms, anyway?</em></p>
 <p><a href="https://en.wikipedia.org/wiki/Explicit_Congestion_Notification">ECN</a>, or Explicit Congestion Notification, is a network feature that is used between routers to notify of
@@ -292,39 +292,39 @@ Sorry, slip of the tongue - traffic wasn&rsquo;t dropped, per se, and you could 
   </a>
 </h2>
 <p>Well, nothing more could be done on a production environment.
-Our product is too large and complex - our logs' SNR is too low.</p>
+Our product is too large and complex - our logs&rsquo; SNR is too low.</p>
 <p>Time to try and reproduce this in a vaccum:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ip netns add A
-$ ip netns add B
-$ ip -n A link add _v0 type veth peer name _v1 netns B
-$ ip -n A link set _v0 up
-$ ip -n A addr add dev _v0 10.254.3.1/24
-$ ip -n A route add default dev _v0 scope global
-$ ip -n B link set _v1 up
-$ ip -n B addr add dev _v1 10.254.1.6/24
-$ ip -n B route add default dev _v1 scope global
-$ ip -n B link add gre1 type gretap local 10.254.1.6 remote 10.254.3.1 key 0x49000000
-$ ip -n B link set gre1 up
-
-<span style="color:#75715e"># Now send an IPv4/GRE/Eth/IPv4 frame where the outer header has ECT(1),</span>
-<span style="color:#75715e"># and the inner header has no ECT bits set:</span>
-
-$ cat send_pkt.py
-    <span style="color:#75715e">#!/usr/bin/env python3</span>
-    from scapy.all import *
-
-    pkt <span style="color:#f92672">=</span> IP<span style="color:#f92672">(</span>b<span style="color:#e6db74">&#39;E\x01\x00\xa7\x00\x00\x00\x00@/`%\n\xfe\x03\x01\n\xfe\x01\x06 \x00eXI\x00&#39;</span>
-             b<span style="color:#e6db74">&#39;\x00\x00\x18\xbe\x92\xa0\xee&amp;\x18\xb0\x92\xa0l&amp;\x08\x00E\x00\x00}\x8b\x85&#39;</span>
-             b<span style="color:#e6db74">&#39;@\x00\x01\x01\xe4\xf2\x82\x82\x82\x01\x82\x82\x82\x02\x08\x00d\x11\xa6\xeb&#39;</span>
-             b<span style="color:#e6db74">&#39;3\x1e\x1e\\xf3\\xf7`\x00\x00\x00\x00ZN\x00\x00\x00\x00\x00\x00\x10\x11\x12&#39;</span>
-             b<span style="color:#e6db74">&#39;\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !&#34;#$%&amp;\ ()*+,-./01234&#39;</span>
-             b<span style="color:#e6db74">&#39;56789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;</span><span style="color:#f92672">)</span>
-
-    send<span style="color:#f92672">(</span>pkt<span style="color:#f92672">)</span>
-$ sudo ip netns exec B tcpdump -neqlllvi gre1 icmp &amp; ; sleep <span style="color:#ae81ff">1</span>
-$ sudo ip netns exec A python3 send_pkt.py
-</code></pre></div><p>This packet is an <code>IPv4/GRE/Ethernet/IPv4/ICMP(echo request)</code> packet - a ping over an L2-GRE.
-Sure enough, this was enough to trigger this bug on my Ubuntu 20.04 machine (Kernel v5.4), and on a few of my friends' machines (Kernel v5.12).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ip netns add A
+</span></span><span style="display:flex;"><span>$ ip netns add B
+</span></span><span style="display:flex;"><span>$ ip -n A link add _v0 type veth peer name _v1 netns B
+</span></span><span style="display:flex;"><span>$ ip -n A link set _v0 up
+</span></span><span style="display:flex;"><span>$ ip -n A addr add dev _v0 10.254.3.1/24
+</span></span><span style="display:flex;"><span>$ ip -n A route add default dev _v0 scope global
+</span></span><span style="display:flex;"><span>$ ip -n B link set _v1 up
+</span></span><span style="display:flex;"><span>$ ip -n B addr add dev _v1 10.254.1.6/24
+</span></span><span style="display:flex;"><span>$ ip -n B route add default dev _v1 scope global
+</span></span><span style="display:flex;"><span>$ ip -n B link add gre1 type gretap local 10.254.1.6 remote 10.254.3.1 key 0x49000000
+</span></span><span style="display:flex;"><span>$ ip -n B link set gre1 up
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Now send an IPv4/GRE/Eth/IPv4 frame where the outer header has ECT(1),</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># and the inner header has no ECT bits set:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ cat send_pkt.py
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span>    from scapy.all import *
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    pkt <span style="color:#f92672">=</span> IP<span style="color:#f92672">(</span>b<span style="color:#e6db74">&#39;E\x01\x00\xa7\x00\x00\x00\x00@/`%\n\xfe\x03\x01\n\xfe\x01\x06 \x00eXI\x00&#39;</span>
+</span></span><span style="display:flex;"><span>             b<span style="color:#e6db74">&#39;\x00\x00\x18\xbe\x92\xa0\xee&amp;\x18\xb0\x92\xa0l&amp;\x08\x00E\x00\x00}\x8b\x85&#39;</span>
+</span></span><span style="display:flex;"><span>             b<span style="color:#e6db74">&#39;@\x00\x01\x01\xe4\xf2\x82\x82\x82\x01\x82\x82\x82\x02\x08\x00d\x11\xa6\xeb&#39;</span>
+</span></span><span style="display:flex;"><span>             b<span style="color:#e6db74">&#39;3\x1e\x1e\\xf3\\xf7`\x00\x00\x00\x00ZN\x00\x00\x00\x00\x00\x00\x10\x11\x12&#39;</span>
+</span></span><span style="display:flex;"><span>             b<span style="color:#e6db74">&#39;\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !&#34;#$%&amp;\ ()*+,-./01234&#39;</span>
+</span></span><span style="display:flex;"><span>             b<span style="color:#e6db74">&#39;56789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    send<span style="color:#f92672">(</span>pkt<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>$ sudo ip netns exec B tcpdump -neqlllvi gre1 icmp &amp; ; sleep <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>$ sudo ip netns exec A python3 send_pkt.py
+</span></span></code></pre></div><p>This packet is an <code>IPv4/GRE/Ethernet/IPv4/ICMP(echo request)</code> packet - a ping over an L2-GRE.
+Sure enough, this was enough to trigger this bug on my Ubuntu 20.04 machine (Kernel v5.4), and on a few of my friends&rsquo; machines (Kernel v5.12).</p>
 <p>Running this script on the previous version of Ubuntu we used, 18.04 (Kernel 4.15), did not trigger the bug.</p>
 <p>Want to try it yourself? If <code>tcpdump</code> reports a packet with a destination of <code>18:be:92:a0:ee:26</code>, you&rsquo;re golden.
 If you see <code>18:bd:92:a0:ee:26</code> instead; oh well.</p>
@@ -335,17 +335,17 @@ If you see <code>18:bd:92:a0:ee:26</code> instead; oh well.</p>
   </a>
 </h2>
 <p>Haha, what are the chances? The bits in the destination MAC address that were overriden are in the same offset within the ethernet address as the ECT bits are in the IPv4 header</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> Ethernet Header
-┌─────────────────────────┬────────────────────────── - - -
-│Dest (6B)                │Src (6B)
-│                         │
-└─────────────────────────┴────────────────────────── - - -
- IPv4 Header
-┌───┬──────────┬───────────────────────────────────── - - -
-│Ver│TOS       │
-│1B │(2B)      │
-└───┴──────────┴───────────────────────────────────── - - -
-</code></pre></div><p>That&rsquo;s obviously related, but we couldn&rsquo;t find anything related to it in the code we&rsquo;ve inspected.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span> Ethernet Header
+</span></span><span style="display:flex;"><span>┌─────────────────────────┬────────────────────────── - - -
+</span></span><span style="display:flex;"><span>│Dest (6B)                │Src (6B)
+</span></span><span style="display:flex;"><span>│                         │
+</span></span><span style="display:flex;"><span>└─────────────────────────┴────────────────────────── - - -
+</span></span><span style="display:flex;"><span> IPv4 Header
+</span></span><span style="display:flex;"><span>┌───┬──────────┬───────────────────────────────────── - - -
+</span></span><span style="display:flex;"><span>│Ver│TOS       │
+</span></span><span style="display:flex;"><span>│1B │(2B)      │
+</span></span><span style="display:flex;"><span>└───┴──────────┴───────────────────────────────────── - - -
+</span></span></code></pre></div><p>That&rsquo;s obviously related, but we couldn&rsquo;t find anything related to it in the code we&rsquo;ve inspected.</p>
 <h2 id="finding-the-culprit">
   Finding the culprit
   <a class="heading-link" href="#finding-the-culprit">
@@ -369,8 +369,8 @@ Ubuntu even supplies <a href="https://wiki.ubuntu.com/Kernel/MainlineBuilds">thi
 <li>5.2.21: CLEAR!</li>
 </ul>
 <p>Wow! v5.2.21 is the last version before v5.3.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ git log --grep=&#39; ECT&#39; v5.2.21..v5.3
-</code></pre></div><p>Nothing.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>$ git log --grep=&#39; ECT&#39; v5.2.21..v5.3
+</span></span></code></pre></div><p>Nothing.</p>
 <p>Out of curiosity, I went back to the vagrant box and installed the deb package for kernel v5.3, the one we know is bugged.</p>
 <p>No reproduction.</p>
 <p>v5.4? No reproduction.</p>
@@ -384,35 +384,35 @@ Ubuntu even supplies <a href="https://wiki.ubuntu.com/Kernel/MainlineBuilds">thi
 <p>Okay, so I&rsquo;ve messed up.
 You might have guessed it, but all of this time I&rsquo;ve been operating under this implicit assumption
 that the kernel that&rsquo;s shipped with with Ubuntu is the regular, mainline, vanilla, stock kernel.</p>
-<p>Good ol' kernel.</p>
+<p>Good ol&rsquo; kernel.</p>
 <p>But this is obviously false - Ubuntu&rsquo;s release model doesn&rsquo;t allow it to just upgrade any software to its next major version.
 But if the software stays the same over time, it will not get any security fixes or bug fixes.
 So Ubuntu&rsquo;s maintainers do what any reasonable maintainer does - they backport patchsets from newer kernel versions.</p>
-<p>The kernels that come with Ubuntu out-of-the-box are patched, but the kernels that are provided in <a href="https://wiki.ubuntu.com/Kernel/MainlineBuilds,">https://wiki.ubuntu.com/Kernel/MainlineBuilds,</a> are, well, mainline.</p>
+<p>The kernels that come with Ubuntu out-of-the-box are patched, but the kernels that are provided in <a href="https://wiki.ubuntu.com/Kernel/MainlineBuilds">https://wiki.ubuntu.com/Kernel/MainlineBuilds</a>, are, well, mainline.</p>
 <p>So this bug, presumably, was either backported from a later version, or introduced by a botched application of a patch.</p>
-<p>We also know that this bug was reproduced on my friends' machines (BTW they run Arch); both of them with newer kernels, so the latter option can be eliminated.</p>
+<p>We also know that this bug was reproduced on my friends&rsquo; machines (BTW they run Arch); both of them with newer kernels, so the latter option can be eliminated.</p>
 <p>Time to keep bisecting.</p>
 <p><strong>20 minutes later</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">❯ git log --grep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39; ECT&#39;</span> v5.6..v5.7
-commit b723748750ece7d844cdf2f52c01d37f83387208
-Author: Toke Høiland-Jørgensen &lt;toke@redhat.com&gt;
-Date:   Mon Apr <span style="color:#ae81ff">27</span> 16:11:05 <span style="color:#ae81ff">2020</span> +0200
-
-    tunnel: Propagate ECT<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span> when decapsulating as recommended by RFC6040
-
-    RFC <span style="color:#ae81ff">6040</span> recommends propagating an ECT<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span> mark from an outer tunnel header
-    to the inner header <span style="color:#66d9ef">if</span> that inner header is already marked as ECT<span style="color:#f92672">(</span>0<span style="color:#f92672">)</span>. When
-    RFC <span style="color:#ae81ff">6040</span> decapsulation was implemented, this <span style="color:#66d9ef">case</span> of propagation was not
-    added. This simply appears to be an oversight, so let<span style="color:#960050;background-color:#1e0010">&#39;</span>s fix that.
-
-    Fixes: eccc1bb8d4b4 <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;tunnel: drop packet if ECN present with not-ECT&#34;</span><span style="color:#f92672">)</span>
-    Reported-by: Bob Briscoe &lt;ietf@bobbriscoe.net&gt;
-    Reported-by: Olivier Tilmans &lt;olivier.tilmans@nokia-bell-labs.com&gt;
-    Cc: Dave Taht &lt;dave.taht@gmail.com&gt;
-    Cc: Stephen Hemminger &lt;stephen@networkplumber.org&gt;
-    Signed-off-by: Toke Høiland-Jørgensen &lt;toke@redhat.com&gt;
-    Signed-off-by: David S. Miller &lt;davem@davemloft.net&gt;
-</code></pre></div><p>haha, hey there 👉👈</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>❯ git log --grep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39; ECT&#39;</span> v5.6..v5.7
+</span></span><span style="display:flex;"><span>commit b723748750ece7d844cdf2f52c01d37f83387208
+</span></span><span style="display:flex;"><span>Author: Toke Høiland-Jørgensen &lt;toke@redhat.com&gt;
+</span></span><span style="display:flex;"><span>Date:   Mon Apr <span style="color:#ae81ff">27</span> 16:11:05 <span style="color:#ae81ff">2020</span> +0200
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    tunnel: Propagate ECT<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span> when decapsulating as recommended by RFC6040
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    RFC <span style="color:#ae81ff">6040</span> recommends propagating an ECT<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span> mark from an outer tunnel header
+</span></span><span style="display:flex;"><span>    to the inner header <span style="color:#66d9ef">if</span> that inner header is already marked as ECT<span style="color:#f92672">(</span>0<span style="color:#f92672">)</span>. When
+</span></span><span style="display:flex;"><span>    RFC <span style="color:#ae81ff">6040</span> decapsulation was implemented, this <span style="color:#66d9ef">case</span> of propagation was not
+</span></span><span style="display:flex;"><span>    added. This simply appears to be an oversight, so let<span style="color:#960050;background-color:#1e0010">&#39;</span>s fix that.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Fixes: eccc1bb8d4b4 <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;tunnel: drop packet if ECN present with not-ECT&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    Reported-by: Bob Briscoe &lt;ietf@bobbriscoe.net&gt;
+</span></span><span style="display:flex;"><span>    Reported-by: Olivier Tilmans &lt;olivier.tilmans@nokia-bell-labs.com&gt;
+</span></span><span style="display:flex;"><span>    Cc: Dave Taht &lt;dave.taht@gmail.com&gt;
+</span></span><span style="display:flex;"><span>    Cc: Stephen Hemminger &lt;stephen@networkplumber.org&gt;
+</span></span><span style="display:flex;"><span>    Signed-off-by: Toke Høiland-Jørgensen &lt;toke@redhat.com&gt;
+</span></span><span style="display:flex;"><span>    Signed-off-by: David S. Miller &lt;davem@davemloft.net&gt;
+</span></span></code></pre></div><p>haha, hey there 👉👈</p>
 <p>Well, the description does not fit our scenario exactly, if we look at the IPv4 headers.
 But evidently the kernel doesn&rsquo;t look at the inner IPv4 header either, it looks at the Ethernet header.</p>
 <p>Considering this, not much mystery is left:</p>
@@ -430,61 +430,61 @@ IPv6 traffic is also presumably affected, it&rsquo;s just that the ECT bits are 
 <p>Toke&rsquo;s code modifies <code>IP_ECN_decapsulate</code> to apply the RFC6040 recommendation.
 <code>IP_ECN_decapsulate</code> receives the outer ip-header as an argument, as well as an <code>struct sk_buff *skb</code>, from which it extracts the inner header.</p>
 <p>An <code>skb</code> is a struct used inside the kernel to process packets. <sup><a href="http://vger.kernel.org/~davem/skb.html">[1]</a></sup></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">struct sk_buff {
-/* members truncated */
-    __be16          protocol;           // Current protocol in process
-    __u16           transport_header;   // Offset to the transport header
-    __u16           network_header;     // Offset to the network header
-    __u16           mac_header;         // Offset to the mac header
-/* members truncated */
-    unsigned char       *head,          // Pointer to the start of the packet
-                *data;                  // Cursor pointing to the current poisition in the buffer
-/* members truncated */
-};
-</code></pre></div><p>Toke&rsquo;s using the <code>ip_hdr</code> function to extract the inner header from the skb:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">static inline struct iphdr *ip_hdr(const struct sk_buff *skb)
-{
-    return (struct iphdr *)skb_network_header(skb);
-}
-
-// ...
-
-static inline unsigned char *skb_network_header(const struct sk_buff *skb)
-{
-    return skb-&gt;head + skb-&gt;network_header;
-}
-</code></pre></div><p>It looks like <code>skb-&gt;network_header</code> is set to the wrong offset in our case, where is that little set?
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>struct sk_buff {
+</span></span><span style="display:flex;"><span>/* members truncated */
+</span></span><span style="display:flex;"><span>    __be16          protocol;           // Current protocol in process
+</span></span><span style="display:flex;"><span>    __u16           transport_header;   // Offset to the transport header
+</span></span><span style="display:flex;"><span>    __u16           network_header;     // Offset to the network header
+</span></span><span style="display:flex;"><span>    __u16           mac_header;         // Offset to the mac header
+</span></span><span style="display:flex;"><span>/* members truncated */
+</span></span><span style="display:flex;"><span>    unsigned char       *head,          // Pointer to the start of the packet
+</span></span><span style="display:flex;"><span>                *data;                  // Cursor pointing to the current poisition in the buffer
+</span></span><span style="display:flex;"><span>/* members truncated */
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Toke&rsquo;s using the <code>ip_hdr</code> function to extract the inner header from the skb:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>static inline struct iphdr *ip_hdr(const struct sk_buff *skb)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    return (struct iphdr *)skb_network_header(skb);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>static inline unsigned char *skb_network_header(const struct sk_buff *skb)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    return skb-&gt;head + skb-&gt;network_header;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>It looks like <code>skb-&gt;network_header</code> is set to the wrong offset in our case, where is that little set?
 Oh, it turns out we&rsquo;ve been here before:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// net/ipv4/ip_tunnel.c ~L393
-</span><span style="color:#75715e"></span>    skb_reset_network_header(skb); <span style="color:#75715e">// &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ^^^^^^^^^^^^^^^^^^^^^^^^^^
-</span><span style="color:#75715e"></span>
-    err <span style="color:#f92672">=</span> IP_ECN_decapsulate(iph, skb);
-    <span style="color:#66d9ef">if</span> (unlikely(err)) {
-        <span style="color:#66d9ef">if</span> (log_ecn_error)
-            net_info_ratelimited(<span style="color:#e6db74">&#34;non-ECT from %pI4 with TOS=%#x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
-                    <span style="color:#f92672">&amp;</span>iph<span style="color:#f92672">-&gt;</span>saddr, iph<span style="color:#f92672">-&gt;</span>tos);
-        <span style="color:#66d9ef">if</span> (err <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>) {
-            <span style="color:#f92672">++</span>tunnel<span style="color:#f92672">-&gt;</span>dev<span style="color:#f92672">-&gt;</span>stats.rx_frame_errors;
-            <span style="color:#f92672">++</span>tunnel<span style="color:#f92672">-&gt;</span>dev<span style="color:#f92672">-&gt;</span>stats.rx_errors;
-            <span style="color:#66d9ef">goto</span> drop;
-        }
-    }
-
-<span style="color:#75715e">// ...
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// Gilad: Set the offset of the network header to the cursor
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> skb_reset_network_header(<span style="color:#66d9ef">struct</span> sk_buff <span style="color:#f92672">*</span>skb)
-{
-    skb<span style="color:#f92672">-&gt;</span>network_header <span style="color:#f92672">=</span> skb<span style="color:#f92672">-&gt;</span>data <span style="color:#f92672">-</span> skb<span style="color:#f92672">-&gt;</span>head;
-}
-</code></pre></div><p>At this point in the processing pipeline, the kernel just stripped the tunnel header and starts to process the next header.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// net/ipv4/ip_tunnel.c ~L393
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    skb_reset_network_header(skb); <span style="color:#75715e">// &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// ^^^^^^^^^^^^^^^^^^^^^^^^^^
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    err <span style="color:#f92672">=</span> IP_ECN_decapsulate(iph, skb);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (unlikely(err)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (log_ecn_error)
+</span></span><span style="display:flex;"><span>            net_info_ratelimited(<span style="color:#e6db74">&#34;non-ECT from %pI4 with TOS=%#x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&amp;</span>iph<span style="color:#f92672">-&gt;</span>saddr, iph<span style="color:#f92672">-&gt;</span>tos);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (err <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">++</span>tunnel<span style="color:#f92672">-&gt;</span>dev<span style="color:#f92672">-&gt;</span>stats.rx_frame_errors;
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">++</span>tunnel<span style="color:#f92672">-&gt;</span>dev<span style="color:#f92672">-&gt;</span>stats.rx_errors;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">goto</span> drop;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Gilad: Set the offset of the network header to the cursor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> skb_reset_network_header(<span style="color:#66d9ef">struct</span> sk_buff <span style="color:#f92672">*</span>skb)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    skb<span style="color:#f92672">-&gt;</span>network_header <span style="color:#f92672">=</span> skb<span style="color:#f92672">-&gt;</span>data <span style="color:#f92672">-</span> skb<span style="color:#f92672">-&gt;</span>head;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>At this point in the processing pipeline, the kernel just stripped the tunnel header and starts to process the next header.
 When the tunnel is a regular L3-GRE (probably most of the time), the next header is a network header (IPv4/IPv6/etc.), so setting the network header offset to the cursor makes sense.</p>
 <p>Since we use L2-GRE (probably rare), the next header is sadly, an Ethernet header, rendering this reset incorrect.
 We need to make sure that the correct offset is set:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#f92672">-	skb_reset_network_header(skb);
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+	skb_set_network_header(skb, (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) ? ETH_HLEN : 0);
-</span></code></pre></div><h2 id="tldr">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span><span style="color:#f92672">-	skb_reset_network_header(skb);
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+	skb_set_network_header(skb, (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) ? ETH_HLEN : 0);
+</span></span></span></code></pre></div><h2 id="tldr">
   tl;dr
   <a class="heading-link" href="#tldr">
     <i class="fa fa-link" aria-hidden="true"></i>
@@ -500,71 +500,71 @@ We need to make sure that the correct offset is set:</p>
 <p>A friend of m<strong>I</strong>ne which u<strong>S</strong>u<strong>A</strong>lly w<strong>A</strong>nts to remain anonymous, noti<strong>C</strong>ed that problem is a bit larger than that particular piece of code in <code>ip_tunnel.c</code>.</p>
 <p>For a brief moment in the pipeline, the <code>skb</code> struct is invalid: <code>skb-&gt;protocol</code> tells us that the next protocol is IPv4, but <code>data</code> points to the start of the Ethernet header.</p>
 <p>He proposed the following patch and asked me to send it to the mailing list, but sadly I&rsquo;m too lazy to do so.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff">diff --git a/net/ipv4/ip_tunnel.c b/net/ipv4/ip_tunnel.c
-index 0dca00745ac3..1bd14fa66d74 100644
-<span style="color:#f92672">--- a/net/ipv4/ip_tunnel.c
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/net/ipv4/ip_tunnel.c
-</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -390,6 +390,19 @@ int ip_tunnel_rcv(struct ip_tunnel *tunnel, struct sk_buff *skb,
-</span><span style="color:#75715e"></span> 		tunnel-&gt;i_seqno = ntohl(tpi-&gt;seq) + 1;
- 	}
- 
-<span style="color:#a6e22e">+	if (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) {
-</span><span style="color:#a6e22e">+		if (!pskb_may_pull(skb, ETH_HLEN)) {
-</span><span style="color:#a6e22e">+			tunnel-&gt;dev-&gt;stats.rx_length_errors++;
-</span><span style="color:#a6e22e">+			tunnel-&gt;dev-&gt;stats.rx_errors++;
-</span><span style="color:#a6e22e">+			goto drop;
-</span><span style="color:#a6e22e">+		}
-</span><span style="color:#a6e22e">+
-</span><span style="color:#a6e22e">+		skb-&gt;protocol = eth_type_trans(skb, tunnel-&gt;dev);
-</span><span style="color:#a6e22e">+		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
-</span><span style="color:#a6e22e">+	} else {
-</span><span style="color:#a6e22e">+		skb-&gt;dev = tunnel-&gt;dev;
-</span><span style="color:#a6e22e">+	}
-</span><span style="color:#a6e22e">+
-</span><span style="color:#a6e22e"></span> 	skb_reset_network_header(skb);
- 
- 	err = IP_ECN_decapsulate(iph, skb);
-<span style="color:#75715e">@@ -407,13 +420,6 @@ int ip_tunnel_rcv(struct ip_tunnel *tunnel, struct sk_buff *skb,
-</span><span style="color:#75715e"></span> 	dev_sw_netstats_rx_add(tunnel-&gt;dev, skb-&gt;len);
- 	skb_scrub_packet(skb, !net_eq(tunnel-&gt;net, dev_net(tunnel-&gt;dev)));
- 
-<span style="color:#f92672">-	if (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) {
-</span><span style="color:#f92672">-		skb-&gt;protocol = eth_type_trans(skb, tunnel-&gt;dev);
-</span><span style="color:#f92672">-		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
-</span><span style="color:#f92672">-	} else {
-</span><span style="color:#f92672">-		skb-&gt;dev = tunnel-&gt;dev;
-</span><span style="color:#f92672">-	}
-</span><span style="color:#f92672">-
-</span><span style="color:#f92672"></span> 	if (tun_dst)
- 		skb_dst_set(skb, (struct dst_entry *)tun_dst);
- 
-diff --git a/net/ipv4/ip_tunnel_core.c b/net/ipv4/ip_tunnel_core.c
-index 6b2dc7b2b612..c9010cebb936 100644
-<span style="color:#f92672">--- a/net/ipv4/ip_tunnel_core.c
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/net/ipv4/ip_tunnel_core.c
-</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -105,7 +105,7 @@ int __iptunnel_pull_header(struct sk_buff *skb, int hdr_len,
-</span><span style="color:#75715e"></span> 
- 		eh = (struct ethhdr *)skb-&gt;data;
- 		if (likely(eth_proto_is_802_3(eh-&gt;h_proto)))
-<span style="color:#f92672">-			skb-&gt;protocol = eh-&gt;h_proto;
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+			skb-&gt;protocol = htons(ETH_P_802_3);
-</span><span style="color:#a6e22e"></span> 		else
- 			skb-&gt;protocol = htons(ETH_P_802_2);
- 
-diff --git a/net/ipv6/ip6_tunnel.c b/net/ipv6/ip6_tunnel.c
-index 322698d9fcf4..afeba4ebc6e2 100644
-<span style="color:#f92672">--- a/net/ipv6/ip6_tunnel.c
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/net/ipv6/ip6_tunnel.c
-</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -822,8 +822,6 @@ static int __ip6_tnl_rcv(struct ip6_tnl *tunnel, struct sk_buff *skb,
-</span><span style="color:#75715e"></span> 		tunnel-&gt;i_seqno = ntohl(tpi-&gt;seq) + 1;
- 	}
- 
-<span style="color:#f92672">-	skb-&gt;protocol = tpi-&gt;proto;
-</span><span style="color:#f92672">-
-</span><span style="color:#f92672"></span> 	/* Warning: All skb pointers will be invalidated! */
- 	if (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) {
- 		if (!pskb_may_pull(skb, ETH_HLEN)) {
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span>diff --git a/net/ipv4/ip_tunnel.c b/net/ipv4/ip_tunnel.c
+</span></span><span style="display:flex;"><span>index 0dca00745ac3..1bd14fa66d74 100644
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--- a/net/ipv4/ip_tunnel.c
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/net/ipv4/ip_tunnel.c
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -390,6 +390,19 @@ int ip_tunnel_rcv(struct ip_tunnel *tunnel, struct sk_buff *skb,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 		tunnel-&gt;i_seqno = ntohl(tpi-&gt;seq) + 1;
+</span></span><span style="display:flex;"><span> 	}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+	if (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+		if (!pskb_may_pull(skb, ETH_HLEN)) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+			tunnel-&gt;dev-&gt;stats.rx_length_errors++;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+			tunnel-&gt;dev-&gt;stats.rx_errors++;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+			goto drop;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+		}
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+		skb-&gt;protocol = eth_type_trans(skb, tunnel-&gt;dev);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+	} else {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+		skb-&gt;dev = tunnel-&gt;dev;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+	}
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span> 	skb_reset_network_header(skb);
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> 	err = IP_ECN_decapsulate(iph, skb);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -407,13 +420,6 @@ int ip_tunnel_rcv(struct ip_tunnel *tunnel, struct sk_buff *skb,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 	dev_sw_netstats_rx_add(tunnel-&gt;dev, skb-&gt;len);
+</span></span><span style="display:flex;"><span> 	skb_scrub_packet(skb, !net_eq(tunnel-&gt;net, dev_net(tunnel-&gt;dev)));
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-	if (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) {
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672">-		skb-&gt;protocol = eth_type_trans(skb, tunnel-&gt;dev);
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672">-		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672">-	} else {
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672">-		skb-&gt;dev = tunnel-&gt;dev;
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672">-	}
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672">-
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span> 	if (tun_dst)
+</span></span><span style="display:flex;"><span> 		skb_dst_set(skb, (struct dst_entry *)tun_dst);
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>diff --git a/net/ipv4/ip_tunnel_core.c b/net/ipv4/ip_tunnel_core.c
+</span></span><span style="display:flex;"><span>index 6b2dc7b2b612..c9010cebb936 100644
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--- a/net/ipv4/ip_tunnel_core.c
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/net/ipv4/ip_tunnel_core.c
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -105,7 +105,7 @@ int __iptunnel_pull_header(struct sk_buff *skb, int hdr_len,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 
+</span></span><span style="display:flex;"><span> 		eh = (struct ethhdr *)skb-&gt;data;
+</span></span><span style="display:flex;"><span> 		if (likely(eth_proto_is_802_3(eh-&gt;h_proto)))
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-			skb-&gt;protocol = eh-&gt;h_proto;
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+			skb-&gt;protocol = htons(ETH_P_802_3);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span> 		else
+</span></span><span style="display:flex;"><span> 			skb-&gt;protocol = htons(ETH_P_802_2);
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>diff --git a/net/ipv6/ip6_tunnel.c b/net/ipv6/ip6_tunnel.c
+</span></span><span style="display:flex;"><span>index 322698d9fcf4..afeba4ebc6e2 100644
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--- a/net/ipv6/ip6_tunnel.c
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/net/ipv6/ip6_tunnel.c
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -822,8 +822,6 @@ static int __ip6_tnl_rcv(struct ip6_tnl *tunnel, struct sk_buff *skb,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 		tunnel-&gt;i_seqno = ntohl(tpi-&gt;seq) + 1;
+</span></span><span style="display:flex;"><span> 	}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-	skb-&gt;protocol = tpi-&gt;proto;
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672">-
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span> 	/* Warning: All skb pointers will be invalidated! */
+</span></span><span style="display:flex;"><span> 	if (tunnel-&gt;dev-&gt;type == ARPHRD_ETHER) {
+</span></span><span style="display:flex;"><span> 		if (!pskb_may_pull(skb, ETH_HLEN)) {
+</span></span></code></pre></div>
       </div>
 
 
@@ -601,7 +601,7 @@ index 322698d9fcf4..afeba4ebc6e2 100644
 
     
       
-      <script src="/js/coder.min.03b17769f4f91ae35667e1f2a1ca8c16f50562576cf90ff32b3179926914daa5.js" integrity="sha256-A7F3afT5GuNWZ&#43;HyocqMFvUFYlds&#43;Q/zKzF5kmkU2qU="></script>
+      <script src="/js/coder.min.f453d26c79f010446cf0d9770197f77de32c07b7a5512d141a286247fe154a22.js" integrity="sha256-9FPSbHnwEERs8Nl3AZf3feMsB7elUS0UGihiR/4VSiI="></script>
     
 
     
